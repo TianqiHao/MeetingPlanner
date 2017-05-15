@@ -1,0 +1,139 @@
+<div class="topbar">
+<!--<div class="panel panel-default">
+    <div class="panel-heading">-->
+    <div class="btn_bar">
+        <div align="center">
+            <img id="login" class="btn" ng-click="login()" src="icon/log-in.gif"></img>
+            <a id="logout" style="display:none" class="btn" href="https://accounts.google.com/logout"><img src="icon/log-out.gif"></img></a>
+            <a class="btn" ng-click="loadIt()"><img src="icon/load.gif"/></a>
+            <a class="btn" ng-click="saveIt()"><img src="icon/save.gif"/></a>
+            <a class="btn" ng-click="pushToCal()"><img src="icon/push.gif"/></a>
+        </div>
+    </div>    
+</div>
+
+<br/>
+
+<div id="notification">{{notification}}</div>
+
+<br/>
+
+<div class="col-md-6">
+    <!--<div class="col-md-8" align="center">-->
+        <div class="page1">
+    <div class="panel">
+        <div class="panel-heading"> 
+            <!--<span style="cursor:pointer" class="glyphicon glyphicon-chevron-left prev_btn" aria-hidden="true" ng-click="changeDate(0)"></span>
+            <span>&nbsp;</span>
+            <span align="center"><font color="white" size="4">{{dateDisplay()}}</font></span>
+            <span>&nbsp;</span>
+            <span style="cursor:pointer" class="glyphicon glyphicon-chevron-right next_btn" aria-hidden="true" ng-click="changeDate(1)"></span>
+                      -->
+            <div style="cursor:pointer" class="glyphicon glyphicon-chevron-left prev_btn" aria-hidden="true" ng-click="changeDate(0)"></div>
+            <div class="date" align="center"><font color="white" size="4">&nbsp;{{dateDisplay()}}</font></div>
+            <div style="cursor:pointer" class="glyphicon glyphicon-chevron-right next_btn" aria-hidden="true" ng-click="changeDate(1)"></div>
+            
+        </div>   
+        <div class="panel-body first">
+            <div class="row"> 
+                <div class="col-md-7">
+                    <table>
+                        <tr><td>Start time: <input type="text" maxlength="5" style="max-width:50px; text-align:center" ng-model="startTime" ng-blur="setStart()"></td></tr>
+                        <tr><td>End time: {{endTime()}}</td></tr>
+                        <tr><td>Total length: {{totalLength()}} min</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-5">
+                <canvas class="canvas" id="myCanvas" width="80" height="80"></canvas>
+                </div>
+            </div>
+            
+            <hr>
+
+            <div id="eventOrder">
+            <table class="eventList" ng-repeat="dayActivity in activities">
+                <tr id="mouse" onmouseover="this.style.border='1px solid #A4A4A4'" onmouseout="this.style.border='0'" ng-click="editActivity($index, 1)" ui-draggable="true" drag="'D' + $index" ui-on-Drop="onDrop($index,'D',$data)">
+                    <td width="20%"><span style="cursor:pointer">{{getActivityTime($index)}}</span></td>
+                    <td width="70%" bgcolor="#f6f8fb"><span style="cursor:pointer"><div style="background-color:{{dayActivity.getColor(dayActivity.getTypeId())}};" class="event-name">{{dayActivity.getName()}}</div></span></td>
+                    <td width="10%"><span style="cursor:pointer"><button type="button" class="close event-delete-btn" aria-label="Close" ng-click="removeActivity($index)"><span aria-hidden="true">&times;</span></button></span></td>
+                    <!--<td><button class="glyphicon glyphicon-remove" style="float:right" ng-click="removeActivity($index)"></td>
+                -->
+                </tr>                                            
+            </table>
+            <div class="drop" ui-on-Drop="onDrop(-1,'D',$data)" align="center">Drop an activity here</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--</div>-->
+</div>
+
+<div class="col-md-6">
+    <!--<div class="col-md-8" align="center">-->
+        <div class="page2">
+    <div class="panel">
+        <div class="panel-heading">
+            <div ng-click="addActi=true" class="row" align="center"><span style="cursor:pointer"><font color="white" size="4">{{modeTitle}}</font></span></div>
+        </div>
+        <div class="panel-body second">
+            <div id="input_page" ng-show="addActi">
+                <br/><input id="nameInput" type="text" class="form-control" placeholder="Title" maxlength="50" ng-model="name"><br/>
+                <br/>
+                <div class="input-group">
+                    <input id="lengthInput" class="form-control" placeholder="Length (1-999)" onkeyup="value=value.replace(/\D|^0/g,'')" onpaste="return false;" maxlength="3" align="center" ng-model="duration">
+                    <span class="input-group-addon"> min</span>
+                </div>
+                <br/><br/>
+                <div class="input-group">
+                    <input class="form-control" type="text" ng-model="type" readonly="readonly"/>
+                    <span class="input-group-btn">
+                        <button id="eventType" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="event-type" ng-click="setType('Type: Presentation')">Presentation</a></li>
+                                <li><a class="event-type" ng-click="setType('Type: Discussion')">Discussion</a></li>
+                                <li><a class="event-type" ng-click="setType('Type: Group Work')">Group Work</a></li>
+                                <li><a class="event-type" ng-click="setType('Type: Break')">Break</a></li>
+                            </ul>
+                    </span>
+                </div>
+                <br/>
+                <br/>               
+                <input type="text" placeholder="Description (optional)" ng-model="description" maxlength="150" class="form-control description"/><br/>
+
+                <br>
+
+                <table>
+                    <tr>
+                        <td class="cancel"><button ng-click="btnCancel()" class="cancel-btn"><font color="white">Cancel</font></button></td>
+                        <td class="save"><button ng-click="btnSave()" class="save-btn"><font color="white">Save</font></button></td>
+                    </tr>
+                </table>
+                <br/>
+            </div>  
+            
+            <div id="event_list" ng-hide="addActi">
+                <table onmouseover="this.style.border='1px solid #A4A4A4'" onmouseout="this.style.border='0'" class="eventList" ng-repeat="parkedActivity in parkedActivities">                   
+                    <tr ng-click="editActivity($index, 2)" ui-draggable="true" drag="'P' + $index" ui-on-Drop="onDrop($index,'P',$data)">                                                            
+                        <td width="25%"><span style="cursor:pointer"><div class="eventstyle">{{parkedActivity.getLength()}} min</div></span></td>             
+                        <td width="65%" bgcolor="#f6f8fb"><span style="cursor:pointer"><div style="background-color:{{parkedActivity.getColor(parkedActivity.getTypeId())}};" class="event-name">{{parkedActivity.getName()}}</div></span></td>
+                        <!--<td width="65%" bgcolor="{{parkedActivity.getColor(parkedActivity.getTypeId())}}"><div style="background-color:{{parkedActivity.getColor(parkedActivity.getTypeId())}};" class="event-name">{{parkedActivity.getName()}}</div></td>
+                        -->
+                        <td width="10%"><span style="cursor:pointer"><div class="eventstyle"><button type="button" class="close event-delete-btn" aria-label="Close" ng-click="removeParkedActivity($index)"><span aria-hidden="true">&times;</span></button></div></span></td>                    
+                        <!--<td><button class="glyphicon glyphicon-remove" style="float:right" ng-click="removeParkedActivity($index)"></td>
+                    -->
+                        </span>
+                    </tr>
+                  
+                </table>
+                
+                
+                                              
+                <div class="drop" ui-on-Drop="onDrop(-1,'P',$data)" align="center">Drop an activity here</div>
+            </div>
+                                 
+        </div>
+        
+    </div>
+    </div>
+    <!--</div>-->
+</div>
